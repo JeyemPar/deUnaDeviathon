@@ -142,12 +142,30 @@ export default function BeneficiosPage() {
                   onClick={() => setSeleccion(b)}
                   className="overflow-hidden rounded-2xl bg-white text-left shadow-sm ring-1 ring-gray-100 transition-transform active:scale-[0.98]"
                 >
-                  <div className="relative h-28 w-full overflow-hidden bg-gray-100">
+                  <div
+                    className="relative h-28 w-full overflow-hidden"
+                    style={{
+                      background: `linear-gradient(135deg, ${b.color} 0%, ${b.color}CC 100%)`,
+                    }}
+                  >
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-5xl">
+                      <span
+                        style={{
+                          filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.25))",
+                        }}
+                      >
+                        {b.emoji}
+                      </span>
+                    </div>
                     <img
                       src={imgFor(b)}
                       alt={`${b.marca} — ${b.titulo}`}
                       loading="lazy"
-                      className="h-full w-full object-cover"
+                      referrerPolicy="no-referrer"
+                      className="absolute inset-0 h-full w-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none"
+                      }}
                     />
                     <div
                       className="absolute left-2 top-2 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm"
@@ -284,11 +302,29 @@ function DetalleBeneficio({
 
         <div className="flex-1 overflow-y-auto scrollbar-hide">
           {/* Imagen grande */}
-          <div className="relative mx-5 mt-4 h-44 overflow-hidden rounded-2xl bg-gray-100">
+          <div
+            className="relative mx-5 mt-4 h-44 overflow-hidden rounded-2xl"
+            style={{
+              background: `linear-gradient(135deg, ${beneficio.color} 0%, ${beneficio.color}CC 100%)`,
+            }}
+          >
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-7xl">
+              <span
+                style={{
+                  filter: "drop-shadow(0 4px 10px rgba(0,0,0,0.25))",
+                }}
+              >
+                {beneficio.emoji}
+              </span>
+            </div>
             <img
               src={imgFor(beneficio)}
               alt={beneficio.marca}
-              className="h-full w-full object-cover"
+              referrerPolicy="no-referrer"
+              className="absolute inset-0 h-full w-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = "none"
+              }}
             />
             <div
               className="absolute left-3 top-3 rounded-lg px-2 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-sm"

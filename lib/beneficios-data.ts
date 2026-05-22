@@ -22,10 +22,10 @@ export interface Beneficio {
   emoji: string // fallback visual si la imagen falla
 }
 
-const POLLINATIONS_OPTS =
-  "width=480&height=300&model=flux&nologo=true&enhance=true"
+const POLLINATIONS_OPTS = "width=480&height=300&nologo=true"
 
 export function imgFor(b: Beneficio): string {
+  // seed estable por id → la misma imagen para el mismo cupón entre cargas.
   return `https://image.pollinations.ai/prompt/${encodeURIComponent(b.imgPrompt)}?${POLLINATIONS_OPTS}&seed=${b.id}`
 }
 
@@ -41,7 +41,7 @@ export const BENEFICIOS: Beneficio[] = [
     color: "#E4002B",
     emoji: "🍗",
     imgPrompt:
-      "Crispy golden fried chicken bucket with french fries and soda, hyper detailed product photography, red and white branded background, studio lighting, appetizing food photo",
+      "fried chicken bucket food photography red background",
   },
   {
     id: "pizza-hut-2x1",
@@ -54,7 +54,7 @@ export const BENEFICIOS: Beneficio[] = [
     color: "#D2232C",
     emoji: "🍕",
     imgPrompt:
-      "Delicious melted cheese pizza with pepperoni, hot fresh out of the oven, top down product photography, dark wooden table, warm cinematic lighting",
+      "pepperoni pizza top down food photography",
   },
   {
     id: "cinemark",
@@ -67,7 +67,7 @@ export const BENEFICIOS: Beneficio[] = [
     color: "#F2A900",
     emoji: "🎬",
     imgPrompt:
-      "Cinema popcorn bucket and movie tickets, red velvet curtains background, cinematic dramatic lighting, premium product photography",
+      "cinema popcorn bucket red curtain movie theater",
   },
   {
     id: "marathon",
@@ -80,7 +80,7 @@ export const BENEFICIOS: Beneficio[] = [
     color: "#0066B3",
     emoji: "👟",
     imgPrompt:
-      "Modern athletic running sneakers, clean white studio background, premium product photography, sporty vibrant colors",
+      "modern running sneakers white background product photo",
   },
   {
     id: "movistar-recarga",
@@ -93,7 +93,7 @@ export const BENEFICIOS: Beneficio[] = [
     color: "#019DF4",
     emoji: "📱",
     imgPrompt:
-      "Modern smartphone with vibrant signal waves, blue gradient background, product photography, tech style",
+      "smartphone signal waves blue gradient tech",
   },
   {
     id: "netflix-mes",
@@ -106,7 +106,7 @@ export const BENEFICIOS: Beneficio[] = [
     color: "#E50914",
     emoji: "📺",
     imgPrompt:
-      "Cozy modern living room at night with large TV screen glowing, popcorn and remote on couch, cinematic warm lighting, dark moody atmosphere",
+      "cozy living room tv streaming dark warm",
   },
   {
     id: "starbucks-frappe",
@@ -119,7 +119,7 @@ export const BENEFICIOS: Beneficio[] = [
     color: "#00704A",
     emoji: "☕",
     imgPrompt:
-      "Cold frappuccino coffee drink with whipped cream and caramel drizzle, premium product photography, green branded background, refreshing",
+      "iced frappuccino coffee whipped cream green background",
   },
   {
     id: "supermaxi-5",
@@ -132,7 +132,7 @@ export const BENEFICIOS: Beneficio[] = [
     color: "#E30613",
     emoji: "🛒",
     imgPrompt:
-      "Shopping cart full of fresh colorful groceries and produce, modern supermarket aisle, bright clean lighting, lifestyle photography",
+      "shopping cart fresh groceries supermarket aisle",
   },
 ]
 

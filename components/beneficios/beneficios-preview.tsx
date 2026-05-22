@@ -56,23 +56,29 @@ export function BeneficiosPreview() {
               className="relative w-40 flex-shrink-0 snap-start overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-100 transition-transform active:scale-[0.98]"
             >
               {/* Imagen */}
-              <div className="relative h-24 w-full overflow-hidden bg-gray-100">
+              <div
+                className="relative h-24 w-full overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, ${b.color} 0%, ${b.color}CC 100%)`,
+                }}
+              >
+                {/* Fallback: emoji grande sobre el gradiente de marca */}
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-4xl">
+                  <span style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))" }}>
+                    {b.emoji}
+                  </span>
+                </div>
+                {/* Imagen AI encima — si carga, tapa el fallback */}
                 <img
                   src={imgFor(b)}
                   alt={`${b.marca} — ${b.titulo}`}
                   loading="lazy"
-                  className="h-full w-full object-cover"
+                  referrerPolicy="no-referrer"
+                  className="absolute inset-0 h-full w-full object-cover"
                   onError={(e) => {
                     e.currentTarget.style.display = "none"
                   }}
                 />
-                {/* Fallback emoji centrado por si la imagen no carga */}
-                <div
-                  className="pointer-events-none absolute inset-0 flex items-center justify-center text-3xl"
-                  style={{ zIndex: -1 }}
-                >
-                  {b.emoji}
-                </div>
                 {/* Badge marca */}
                 <div
                   className="absolute left-2 top-2 rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white shadow-sm"

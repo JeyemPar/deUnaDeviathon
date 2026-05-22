@@ -14,7 +14,7 @@ export function BottomNavigation() {
   const [active, setActive] = useState("inicio")
 
   return (
-    <nav className="border-t border-gray-100 bg-white">
+    <nav className="border-t border-gray-100 bg-white" style={{ paddingBottom: 'env(safe-area-inset-bottom, 8px)' }}>
       <div className="flex items-center justify-around py-2">
         {navItems.map((item) => (
           <button

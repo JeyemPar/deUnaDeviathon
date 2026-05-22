@@ -7,12 +7,9 @@ import { BottomNavigation } from "@/components/banking/bottom-navigation"
 
 export default function BankingHome() {
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col bg-white">
-      {/* Status Bar Spacer */}
-      <div className="h-6 bg-white" />
-
+    <div className="mobile-container">
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto pb-4">
+      <div className="flex-1 overflow-y-auto scrollbar-hide">
         <Header />
         <BalanceCard />
         <PromoCarousel />
@@ -20,13 +17,9 @@ export default function BankingHome() {
       </div>
 
       {/* Fixed Bottom Section */}
-      <div className="sticky bottom-0 bg-white">
+      <div className="shrink-0">
         <QRButton />
         <BottomNavigation />
-        {/* Home Indicator */}
-        <div className="flex justify-center pb-2">
-          <div className="h-1 w-32 rounded-full bg-gray-200" />
-        </div>
       </div>
     </div>
   )

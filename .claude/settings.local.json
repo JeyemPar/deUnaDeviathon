@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(python *)",
+      "Bash(pip install *)",
+      "Bash(PYTHONIOENCODING=utf-8 python notebook/_test_run.py)",
+      "Bash(pnpm build *)",
+      "PowerShell(pnpm build *)",
+      "PowerShell(npx next build 2>&1 | Select-Object -Last 60)",
+      "Read(//c/Users/intri/AppData/Local/Temp/claude/C--proyectos-deUnaDeviathon/50539fdd-5760-4b68-bb46-6a090a75d628/tasks/**)",
+      "Bash(break)",
+      "Bash(tasklist)",
+      "Bash(npx next *)",
+      "Bash([ -s \"$F\" ])",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /PID 14516 /F)",
+      "Bash(curl -s -o response.html -w \"HTTP:%{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w 'HTTP:%{http_code}\\\\n' http://localhost:3000__TRACKED_VAR__)",
+      "Bash(awk '{print $5}')",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000__TRACKED_VAR__ --max-time 90)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000/devaca\" --max-time 180)",
+      "Bash(pnpm dev *)",
+      "Bash(tee dev-test.log)",
+      "PowerShell($deadline=\\(Get-Date\\).AddSeconds\\(60\\); do { Start-Sleep -Milliseconds 800; $content = if \\(Test-Path dev-test.log\\) { Get-Content dev-test.log -Raw } else { \"\" }; if \\($content -match \"Ready in|Error\"\\) { break } } until \\(\\(Get-Date\\) -gt $deadline\\); Write-Output $content)",
+      "PowerShell(Get-Command *)"
+    ]
+  }
+}

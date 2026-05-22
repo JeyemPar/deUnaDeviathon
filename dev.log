@@ -1,0 +1,8 @@
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://100.88.130.116:3000
+✓ Ready in 468ms
+
+ GET / 200 in 1944ms (next.js: 1741ms, application-code: 203ms)
+○ Compiling /devaca ...
+ GET / 200 in 43ms (next.js: 3ms, application-code: 40ms)

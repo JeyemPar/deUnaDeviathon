@@ -161,3 +161,26 @@ html, body {
 .overflow-y-auto {
   -webkit-overflow-scrolling: touch;
 }
+
+/* DeVaca: pulso del nivel "en curso" */
+@keyframes devaca-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 1.5px #00DDA6;
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(0, 221, 166, 0.15);
+  }
+}
+
+/* Scanner: línea roja que recorre el marco del QR */
+@keyframes scan-line {
+  0% {
+    top: 8%;
+  }
+  50% {
+    top: 88%;
+  }
+  100% {
+    top: 8%;
+  }
+}

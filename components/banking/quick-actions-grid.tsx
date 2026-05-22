@@ -9,7 +9,9 @@ import {
   Smartphone,
   FileText,
   Train,
+  PiggyBank,
 } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 const actions = [
   {
@@ -69,23 +71,41 @@ const actions = [
     color: "#5B2393",
     bgColor: "#EDE3F8",
   },
+  {
+    id: 9,
+    label: "DeVaca",
+    icon: PiggyBank,
+    color: "#00DDA6",
+    bgColor: "rgba(0, 221, 166, 0.15)",
+    isNew: true,
+    route: "/devaca",
+  },
 ]
 
 export function QuickActionsGrid() {
+  const router = useRouter()
+
   return (
     <div className="mt-4 px-4">
       <div className="grid grid-cols-4 gap-3">
         {actions.map((action) => (
           <button
             key={action.id}
+            onClick={() => action.route && router.push(action.route)}
             className="flex flex-col items-center gap-2"
           >
             <div
-              className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-100"
+              className="relative flex h-16 w-16 items-center justify-center rounded-2xl shadow-sm ring-1 ring-gray-100"
+              style={{ backgroundColor: action.isNew ? action.bgColor : "#ffffff" }}
             >
               {action.badge && (
                 <div className="absolute -top-1 left-1/2 -translate-x-1/2 rounded bg-[#22C55E] px-1.5 py-0.5 text-[10px] font-bold text-white">
                   {action.badge}
+                </div>
+              )}
+              {action.isNew && (
+                <div className="absolute -top-1 -right-1 rounded-full bg-[#00DDA6] px-1.5 py-0.5 text-[9px] font-bold text-white">
+                  NEW
                 </div>
               )}
               <action.icon
@@ -93,7 +113,10 @@ export function QuickActionsGrid() {
                 style={{ color: action.color }}
               />
             </div>
-            <span className="text-center text-xs leading-tight text-foreground">
+            <span
+              className="text-center text-xs leading-tight text-foreground"
+              style={action.isNew ? { color: "#432959", fontWeight: 600 } : {}}
+            >
               {action.label}
             </span>
           </button>

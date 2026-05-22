@@ -2,6 +2,7 @@ import { Header } from "@/components/banking/header"
 import { BalanceCard } from "@/components/banking/balance-card"
 import { PromoCarousel } from "@/components/banking/promo-carousel"
 import { QuickActionsGrid } from "@/components/banking/quick-actions-grid"
+import { BeneficiosPreview } from "@/components/beneficios/beneficios-preview"
 import { QRButton } from "@/components/banking/qr-button"
 import { BottomNavigation } from "@/components/banking/bottom-navigation"
 
@@ -13,6 +14,7 @@ export default function BankingHome() {
         <Header />
         <BalanceCard />
         <PromoCarousel />
+        <BeneficiosPreview />
         <QuickActionsGrid />
       </div>
 

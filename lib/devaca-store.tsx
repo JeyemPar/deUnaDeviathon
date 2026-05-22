@@ -41,6 +41,8 @@ export interface DeVacaState {
   // Si null: se elige automáticamente la primera meta no alcanzada.
   // Si número: el índice de niveles elegido por el usuario.
   metaSeleccionadaIndex: number | null
+  // IDs de beneficios ya canjeados (cupones de un solo uso).
+  beneficiosCanjeados: string[]
 }
 
 const NIVELES_DEFAULT: Nivel[] = [
@@ -74,6 +76,7 @@ const INITIAL_STATE: DeVacaState = {
   transacciones: TX_DEFAULT,
   mipymes: MIPYMES_DEFAULT,
   metaSeleccionadaIndex: null,
+  beneficiosCanjeados: [],
 }
 
 type Action =
@@ -89,6 +92,7 @@ type Action =
   | { type: "ACTUALIZAR_SALDO_PRINCIPAL"; monto: number }
   | { type: "RESTAURAR_NIVELES" }
   | { type: "SELECCIONAR_META"; index: number | null }
+  | { type: "MARCAR_BENEFICIO_CANJEADO"; beneficioId: string }
 
 function reducer(state: DeVacaState, action: Action): DeVacaState {
   switch (action.type) {
@@ -156,6 +160,13 @@ function reducer(state: DeVacaState, action: Action): DeVacaState {
       }
       return { ...state, metaSeleccionadaIndex: action.index }
     }
+    case "MARCAR_BENEFICIO_CANJEADO": {
+      if (state.beneficiosCanjeados.includes(action.beneficioId)) return state
+      return {
+        ...state,
+        beneficiosCanjeados: [...state.beneficiosCanjeados, action.beneficioId],
+      }
+    }
     default:
       return state
   }
@@ -174,6 +185,7 @@ interface DeVacaContextValue {
   actualizarSaldoPrincipal: (monto: number) => void
   restaurarNiveles: () => void
   seleccionarMeta: (index: number | null) => void
+  marcarBeneficioCanjeado: (beneficioId: string) => void
 }
 
 const DeVacaCtx = createContext<DeVacaContextValue | null>(null)
@@ -212,6 +224,10 @@ export function DeVacaProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SELECCIONAR_META", index })
   }, [])
 
+  const marcarBeneficioCanjeado = useCallback((beneficioId: string) => {
+    dispatch({ type: "MARCAR_BENEFICIO_CANJEADO", beneficioId })
+  }, [])
+
   return (
     <DeVacaCtx.Provider
       value={{
@@ -223,6 +239,7 @@ export function DeVacaProvider({ children }: { children: ReactNode }) {
         actualizarSaldoPrincipal,
         restaurarNiveles,
         seleccionarMeta,
+        marcarBeneficioCanjeado,
       }}
     >
       {children}

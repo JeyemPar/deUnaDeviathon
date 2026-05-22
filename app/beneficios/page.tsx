@@ -14,6 +14,7 @@ import { useDeVaca } from "@/lib/devaca-store"
 import {
   BENEFICIOS,
   CATEGORIAS,
+  SEGMENTOS,
   imgFor,
   type Beneficio,
   type CategoriaBeneficio,
@@ -26,10 +27,12 @@ const MORADO = "#432959"
 
 export default function BeneficiosPage() {
   const router = useRouter()
-  const { state, canjearAhorro } = useDeVaca()
+  const { state, canjearAhorro, marcarBeneficioCanjeado } = useDeVaca()
   const [filtro, setFiltro] = useState<CategoriaBeneficio | "Todos">("Todos")
   const [seleccion, setSeleccion] = useState<Beneficio | null>(null)
   const [canjeExito, setCanjeExito] = useState<Beneficio | null>(null)
+
+  const yaCanjeado = (id: string) => state.beneficiosCanjeados.includes(id)
 
   const lista = useMemo(
     () =>
@@ -46,8 +49,10 @@ export default function BeneficiosPage() {
   }, [canjeExito])
 
   const handleCanjear = (b: Beneficio) => {
+    if (yaCanjeado(b.id)) return
     if (state.ahorroAcumulado < b.costo) return
     canjearAhorro(0, b.costo)
+    marcarBeneficioCanjeado(b.id)
     setSeleccion(null)
     setCanjeExito(b)
   }
@@ -77,7 +82,7 @@ export default function BeneficiosPage() {
         </div>
 
         {/* Saldo DeVaca */}
-        <div className="px-4 pb-3">
+        <div className="px-4 pb-2">
           <div
             className="flex items-center justify-between rounded-2xl p-3"
             style={{
@@ -98,6 +103,30 @@ export default function BeneficiosPage() {
               </div>
             </div>
             <Sparkles className="h-5 w-5 text-white/80" />
+          </div>
+        </div>
+
+        {/* Banner economía circular */}
+        <div className="px-4 pb-3">
+          <div
+            className="flex items-center gap-2.5 rounded-2xl px-3 py-2"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(0,221,166,0.10) 0%, rgba(67,41,89,0.08) 100%)",
+            }}
+          >
+            <span className="text-base">🔄</span>
+            <div className="leading-tight">
+              <p
+                className="text-[11px] font-bold"
+                style={{ color: MORADO }}
+              >
+                Tu ahorro vuelve a vos
+              </p>
+              <p className="text-[10px] text-gray-600">
+                Ahorras en MiPymes → canjeás en Comercios, MiPymes o Cupones
+              </p>
+            </div>
           </div>
         </div>
 
@@ -122,105 +151,70 @@ export default function BeneficiosPage() {
         </div>
       </div>
 
-      {/* Grilla de beneficios */}
+      {/* Beneficios — segmentados cuando "Todos", grilla plana cuando hay filtro */}
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-24">
         {lista.length === 0 ? (
           <p className="mt-10 text-center text-sm text-gray-500">
             No hay beneficios en esta categoría todavía.
           </p>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {lista.map((b) => {
-              const puede = state.ahorroAcumulado >= b.costo
-              const faltante = Math.max(
-                0,
-                b.costo - state.ahorroAcumulado
+        ) : filtro === "Todos" ? (
+          <div className="space-y-5">
+            {SEGMENTOS.map((seg) => {
+              const items = BENEFICIOS.filter(
+                (b) => b.categoria === seg.id
               )
+              if (items.length === 0) return null
               return (
-                <button
-                  key={b.id}
-                  onClick={() => setSeleccion(b)}
-                  className="overflow-hidden rounded-2xl bg-white text-left shadow-sm ring-1 ring-gray-100 transition-transform active:scale-[0.98]"
-                >
-                  <div
-                    className="relative h-28 w-full overflow-hidden"
-                    style={{
-                      background: `linear-gradient(135deg, ${b.color} 0%, ${b.color}CC 100%)`,
-                    }}
-                  >
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-5xl">
-                      <span
-                        style={{
-                          filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.25))",
-                        }}
-                      >
-                        {b.emoji}
-                      </span>
-                    </div>
-                    <img
-                      src={imgFor(b)}
-                      alt={`${b.marca} — ${b.titulo}`}
-                      loading="lazy"
-                      referrerPolicy="no-referrer"
-                      className="absolute inset-0 h-full w-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none"
-                      }}
-                    />
-                    <div
-                      className="absolute left-2 top-2 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm"
-                      style={{ backgroundColor: b.color }}
-                    >
-                      {b.marca}
-                    </div>
-                    <div
-                      className="absolute right-2 top-2 rounded-md bg-white/95 px-1.5 py-0.5 text-[10px] font-bold backdrop-blur-sm"
-                      style={{ color: b.color }}
-                    >
-                      -{b.descuentoPct}%
-                    </div>
-                    {!puede && (
-                      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" />
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <p
-                      className="line-clamp-2 text-[13px] font-semibold leading-tight"
-                      style={{ color: MORADO }}
-                    >
-                      {b.titulo}
-                    </p>
-                    <p className="mt-0.5 line-clamp-1 text-[11px] text-gray-500">
-                      {b.descripcion}
-                    </p>
-                    <div className="mt-2 flex items-center justify-between">
-                      <span
+                <section key={seg.id}>
+                  <div className="mb-2 flex items-start gap-2">
+                    <span className="text-lg leading-none">{seg.icono}</span>
+                    <div className="leading-tight">
+                      <h2
                         className="text-sm font-bold"
-                        style={{ color: puede ? VERDE : "#9CA3AF" }}
+                        style={{ color: MORADO }}
                       >
-                        ${b.costo.toFixed(2)}
-                      </span>
-                      {puede ? (
-                        <span
-                          className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase"
-                          style={{
-                            backgroundColor: VERDE_SOFT,
-                            color: VERDE,
-                          }}
-                        >
-                          Canjear
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-0.5 text-[10px] font-medium text-gray-400">
-                          <Lock className="h-3 w-3" />
-                          -${faltante.toFixed(2)}
-                        </span>
-                      )}
+                        {seg.titulo}
+                      </h2>
+                      <p className="text-[11px] text-gray-500">
+                        {seg.descripcion}
+                      </p>
                     </div>
+                    <span
+                      className="ml-auto rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide"
+                      style={{
+                        backgroundColor: "#F3F4F6",
+                        color: "#6B7280",
+                      }}
+                    >
+                      {items.length}
+                    </span>
                   </div>
-                </button>
+                  <div className="grid grid-cols-2 gap-3">
+                    {items.map((b) => (
+                      <BeneficioCard
+                        key={b.id}
+                        b={b}
+                        canjeado={yaCanjeado(b.id)}
+                        ahorro={state.ahorroAcumulado}
+                        onClick={() => setSeleccion(b)}
+                      />
+                    ))}
+                  </div>
+                </section>
               )
             })}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {lista.map((b) => (
+              <BeneficioCard
+                key={b.id}
+                b={b}
+                canjeado={yaCanjeado(b.id)}
+                ahorro={state.ahorroAcumulado}
+                onClick={() => setSeleccion(b)}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -235,6 +229,7 @@ export default function BeneficiosPage() {
         <DetalleBeneficio
           beneficio={seleccion}
           ahorro={state.ahorroAcumulado}
+          canjeado={yaCanjeado(seleccion.id)}
           onClose={() => setSeleccion(null)}
           onCanjear={() => handleCanjear(seleccion)}
         />
@@ -269,18 +264,139 @@ export default function BeneficiosPage() {
   )
 }
 
+function BeneficioCard({
+  b,
+  canjeado,
+  ahorro,
+  onClick,
+}: {
+  b: Beneficio
+  canjeado: boolean
+  ahorro: number
+  onClick: () => void
+}) {
+  const puede = !canjeado && ahorro >= b.costo
+  const faltante = Math.max(0, b.costo - ahorro)
+
+  return (
+    <button
+      onClick={onClick}
+      className="relative overflow-hidden rounded-2xl bg-white text-left shadow-sm ring-1 ring-gray-100 transition-transform active:scale-[0.98]"
+      style={canjeado ? { opacity: 0.65 } : undefined}
+    >
+      <div
+        className="relative h-28 w-full overflow-hidden"
+        style={{
+          background: `linear-gradient(135deg, ${b.color} 0%, ${b.color}CC 100%)`,
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-5xl">
+          <span
+            style={{ filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.25))" }}
+          >
+            {b.emoji}
+          </span>
+        </div>
+        <img
+          src={imgFor(b)}
+          alt={`${b.marca} — ${b.titulo}`}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={canjeado ? { filter: "grayscale(1)" } : undefined}
+          onError={(e) => {
+            e.currentTarget.style.display = "none"
+          }}
+        />
+        <div
+          className="absolute left-2 top-2 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm"
+          style={{ backgroundColor: b.color }}
+        >
+          {b.marca}
+        </div>
+        <div
+          className="absolute right-2 top-2 rounded-md bg-white/95 px-1.5 py-0.5 text-[10px] font-bold backdrop-blur-sm"
+          style={{ color: b.color }}
+        >
+          -{b.descuentoPct}%
+        </div>
+        {canjeado ? (
+          <>
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span
+                className="-rotate-12 rounded-md border-2 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wider text-white"
+                style={{
+                  borderColor: "rgba(255,255,255,0.9)",
+                  backgroundColor: "rgba(0,0,0,0.35)",
+                }}
+              >
+                Canjeado
+              </span>
+            </div>
+          </>
+        ) : !puede ? (
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" />
+        ) : null}
+      </div>
+      <div className="p-3">
+        <p
+          className="line-clamp-2 text-[13px] font-semibold leading-tight"
+          style={{ color: MORADO }}
+        >
+          {b.titulo}
+        </p>
+        <p className="mt-0.5 line-clamp-1 text-[11px] text-gray-500">
+          {b.descripcion}
+        </p>
+        <div className="mt-2 flex items-center justify-between">
+          <span
+            className="text-sm font-bold"
+            style={{
+              color: canjeado ? "#9CA3AF" : puede ? VERDE : "#9CA3AF",
+              textDecoration: canjeado ? "line-through" : "none",
+            }}
+          >
+            ${b.costo.toFixed(2)}
+          </span>
+          {canjeado ? (
+            <span className="flex items-center gap-0.5 text-[10px] font-bold uppercase text-gray-500">
+              <Check className="h-3 w-3" strokeWidth={3} />
+              Usado
+            </span>
+          ) : puede ? (
+            <span
+              className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase"
+              style={{ backgroundColor: VERDE_SOFT, color: VERDE }}
+            >
+              Canjear
+            </span>
+          ) : (
+            <span className="flex items-center gap-0.5 text-[10px] font-medium text-gray-400">
+              <Lock className="h-3 w-3" />
+              -${faltante.toFixed(2)}
+            </span>
+          )}
+        </div>
+      </div>
+    </button>
+  )
+}
+
 function DetalleBeneficio({
   beneficio,
   ahorro,
+  canjeado,
   onClose,
   onCanjear,
 }: {
   beneficio: Beneficio
   ahorro: number
+  canjeado: boolean
   onClose: () => void
   onCanjear: () => void
 }) {
-  const puede = ahorro >= beneficio.costo
+  const puede = !canjeado && ahorro >= beneficio.costo
   const faltante = Math.max(0, beneficio.costo - ahorro)
 
   return (
@@ -322,6 +438,7 @@ function DetalleBeneficio({
               alt={beneficio.marca}
               referrerPolicy="no-referrer"
               className="absolute inset-0 h-full w-full object-cover"
+              style={canjeado ? { filter: "grayscale(1)" } : undefined}
               onError={(e) => {
                 e.currentTarget.style.display = "none"
               }}
@@ -338,6 +455,22 @@ function DetalleBeneficio({
             >
               -{beneficio.descuentoPct}%
             </div>
+            {canjeado && (
+              <>
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span
+                    className="-rotate-12 rounded-lg border-2 px-4 py-1.5 text-lg font-extrabold uppercase tracking-widest text-white"
+                    style={{
+                      borderColor: "rgba(255,255,255,0.9)",
+                      backgroundColor: "rgba(0,0,0,0.35)",
+                    }}
+                  >
+                    Canjeado
+                  </span>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="px-5 pt-4 pb-5">
@@ -424,7 +557,9 @@ function DetalleBeneficio({
             className="w-full rounded-2xl py-4 text-base font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-40"
             style={{ backgroundColor: puede ? MORADO : "#9CA3AF" }}
           >
-            {puede
+            {canjeado
+              ? "Cupón ya canjeado"
+              : puede
               ? `Canjear por $${beneficio.costo.toFixed(2)}`
               : `Te faltan $${faltante.toFixed(2)}`}
           </button>

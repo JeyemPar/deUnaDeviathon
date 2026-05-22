@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Gift, Lock } from "lucide-react"
+import { Gift, Lock, Check } from "lucide-react"
 import { useDeVaca } from "@/lib/devaca-store"
 import { BENEFICIOS, imgFor } from "@/lib/beneficios-data"
 
@@ -11,8 +11,15 @@ const MORADO = "#432959"
 
 export function BeneficiosPreview() {
   const { state } = useDeVaca()
-  // Mostramos los 5 más baratos para inspirar (los que ya puede o casi puede canjear).
-  const seleccion = [...BENEFICIOS].sort((a, b) => a.costo - b.costo).slice(0, 5)
+  // Priorizamos los más baratos NO canjeados todavía (los que sirven como
+  // gancho); si no quedan, mostramos los demás igual con su estado.
+  const ordenados = [...BENEFICIOS].sort((a, b) => a.costo - b.costo)
+  const noCanjeados = ordenados.filter(
+    (b) => !state.beneficiosCanjeados.includes(b.id)
+  )
+  const seleccion = (
+    noCanjeados.length >= 5 ? noCanjeados : ordenados
+  ).slice(0, 5)
 
   return (
     <section className="mt-5">
@@ -47,13 +54,15 @@ export function BeneficiosPreview() {
 
       <div className="scrollbar-hide flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2">
         {seleccion.map((b) => {
-          const puede = state.ahorroAcumulado >= b.costo
+          const canjeado = state.beneficiosCanjeados.includes(b.id)
+          const puede = !canjeado && state.ahorroAcumulado >= b.costo
           const faltante = Math.max(0, b.costo - state.ahorroAcumulado)
           return (
             <Link
               key={b.id}
               href="/beneficios"
               className="relative w-40 flex-shrink-0 snap-start overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-100 transition-transform active:scale-[0.98]"
+              style={canjeado ? { opacity: 0.65 } : undefined}
             >
               {/* Imagen */}
               <div
@@ -75,6 +84,7 @@ export function BeneficiosPreview() {
                   loading="lazy"
                   referrerPolicy="no-referrer"
                   className="absolute inset-0 h-full w-full object-cover"
+                  style={canjeado ? { filter: "grayscale(1)" } : undefined}
                   onError={(e) => {
                     e.currentTarget.style.display = "none"
                   }}
@@ -93,6 +103,22 @@ export function BeneficiosPreview() {
                 >
                   -{b.descuentoPct}%
                 </div>
+                {canjeado && (
+                  <>
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span
+                        className="-rotate-12 rounded-md border-2 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white"
+                        style={{
+                          borderColor: "rgba(255,255,255,0.9)",
+                          backgroundColor: "rgba(0,0,0,0.35)",
+                        }}
+                      >
+                        Canjeado
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="p-2.5">
@@ -105,11 +131,19 @@ export function BeneficiosPreview() {
                 <div className="mt-2 flex items-center justify-between">
                   <span
                     className="text-[11px] font-bold"
-                    style={{ color: puede ? VERDE : "#9CA3AF" }}
+                    style={{
+                      color: puede ? VERDE : "#9CA3AF",
+                      textDecoration: canjeado ? "line-through" : "none",
+                    }}
                   >
                     ${b.costo.toFixed(2)}
                   </span>
-                  {puede ? (
+                  {canjeado ? (
+                    <span className="flex items-center gap-0.5 text-[9px] font-bold uppercase text-gray-500">
+                      <Check className="h-2.5 w-2.5" strokeWidth={3} />
+                      Usado
+                    </span>
+                  ) : puede ? (
                     <span
                       className="rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase"
                       style={{

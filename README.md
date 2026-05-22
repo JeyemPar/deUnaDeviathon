@@ -154,6 +154,6 @@ El desarrollo y mantenimiento de este proyecto es realizado por:
 *   **Donly666** — [jervinpan@gmail.com](mailto:jervinpan@gmail.com)
 *   **Michael.Paredes** — [jeyempar@gmail.com](mailto:jeyempar@gmail.com)
 *   **María Jose Oliva T.** -- [maria.oliva@upec.edu.ec]
-*   **Gariela Villarreal.** -- [gabriela.villarreal@upec.edu.ec]
+*   **Gariela Villarreal.** -- [gmadelaine.villarreal@upec.edu.ec]
 *   **Josthin Fuel** -- [josthin.fuel@upec.edu.ec]
 --

@@ -1,19 +1,23 @@
 "use client"
 
-import { QRMockPayment } from "./qr-mock-payment"
+import { QRScanner } from "./qr-scanner"
 
-export function ScannerFrame() {
+interface ScannerFrameProps {
+  onScanSuccess: (decodedText: string) => void
+}
+
+export function ScannerFrame({ onScanSuccess }: ScannerFrameProps) {
   return (
     <div className="relative">
       {/* Scanner Frame */}
       <div 
-        className="relative flex h-72 w-72 items-center justify-center overflow-hidden rounded-[40px] border-4 border-white/60 bg-white/10 backdrop-blur-[2px]"
+        className="relative flex h-72 w-72 items-center justify-center overflow-hidden rounded-[40px] border-4 border-white/60 bg-black"
         style={{
           boxShadow: '0 0 40px rgba(255,255,255,0.1), inset 0 0 40px rgba(255,255,255,0.05)'
         }}
       >
-        {/* QR Code Display */}
-        <QRMockPayment />
+        {/* Real QR Scanner */}
+        <QRScanner onScanSuccess={onScanSuccess} />
       </div>
       
       {/* Corner Accents */}

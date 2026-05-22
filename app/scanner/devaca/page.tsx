@@ -202,7 +202,7 @@ export default function ScannerDeVacaPage() {
                     ¿Activar Ahorro Sugerido?
                   </p>
                   <p className="text-[11px] text-gray-500">
-                    Suma +${mipyme.ahorro.toFixed(2)} a tu alcancía DeVaca
+                    Suma +${mipyme.ahorro.toFixed(2)} a tu alcancía dVaca
                   </p>
                 </div>
                 <ToggleSwitch active={conAhorro} />

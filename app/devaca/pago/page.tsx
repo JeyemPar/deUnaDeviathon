@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { ChevronLeft, Check, PiggyBank, Store } from "lucide-react"
+import { ChevronLeft, Check, Store } from "lucide-react"
 import { useDeVaca } from "@/lib/devaca-store"
 
 const VERDE = "#00DDA6"
@@ -166,7 +166,7 @@ function PagoContent() {
           {/* Alcancía antes/después */}
           <div className="mt-5">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Tu alcancía DeVaca
+              Tu alcancía dVaca
             </p>
             <div
               className="mt-2 flex items-center justify-between rounded-2xl px-4 py-3"
@@ -258,8 +258,12 @@ function PagoContent() {
               Llevas ${exito.total.toFixed(2)} este mes
             </p>
             <div className="mt-4 flex items-center justify-center gap-1.5 text-xs text-gray-400">
-              <PiggyBank className="h-3.5 w-3.5" style={{ color: VERDE }} />
-              <span>Redirigiendo a DeVaca…</span>
+              <img
+                src="/devaca.png"
+                alt="dVaca"
+                className="h-4 w-4 rounded-sm object-contain"
+              />
+              <span>Redirigiendo a dVaca…</span>
             </div>
           </div>
         </div>

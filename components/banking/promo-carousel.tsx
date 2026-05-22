@@ -82,7 +82,7 @@ export function PromoCarousel() {
         faltante > 0
           ? `para ganar ${metaActiva.bonus}% extra (+$${bonusEsperado.toFixed(2)})`
           : `Bonus de ${metaActiva.bonus}% desbloqueado`,
-      cta: "Ir a DeVaca",
+      cta: "Ir a dVaca",
       gradient: "linear-gradient(135deg, #432959 0%, #6B4090 100%)",
       iconBg: "rgba(0, 221, 166, 0.25)",
       iconColor: VERDE,
@@ -153,7 +153,7 @@ export function PromoCarousel() {
       <div className="mb-2 flex items-end justify-between px-4">
         <div className="leading-tight">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
-            DeVaca Insights
+            dVaca Insights
           </p>
           <p
             className="text-sm font-semibold"

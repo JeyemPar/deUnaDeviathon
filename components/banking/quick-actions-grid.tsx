@@ -9,7 +9,6 @@ import {
   Smartphone,
   FileText,
   Train,
-  PiggyBank,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -73,8 +72,8 @@ const actions = [
   },
   {
     id: 9,
-    label: "DeVaca",
-    icon: PiggyBank,
+    label: "dVaca",
+    icon: Wallet,
     color: "#00DDA6",
     bgColor: "rgba(0, 221, 166, 0.15)",
     isNew: true,
@@ -98,6 +97,18 @@ export function QuickActionsGrid() {
               className="relative flex h-16 w-16 items-center justify-center rounded-2xl shadow-sm ring-1 ring-gray-100"
               style={{ backgroundColor: action.isNew ? action.bgColor : "#ffffff" }}
             >
+              {action.route === "/devaca" ? (
+                <img
+                  src="/devaca.png"
+                  alt="dVaca"
+                  className="h-16 w-16 object-cover rounded-2xl"
+                />
+              ) : (
+                <action.icon
+                  className="h-7 w-7"
+                  style={{ color: action.color }}
+                />
+              )}
               {action.badge && (
                 <div className="absolute -top-1 left-1/2 -translate-x-1/2 rounded bg-[#22C55E] px-1.5 py-0.5 text-[10px] font-bold text-white">
                   {action.badge}
@@ -108,10 +119,6 @@ export function QuickActionsGrid() {
                   NEW
                 </div>
               )}
-              <action.icon
-                className="h-7 w-7"
-                style={{ color: action.color }}
-              />
             </div>
             <span
               className="text-center text-xs leading-tight text-foreground"

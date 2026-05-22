@@ -5,7 +5,6 @@ import {
   Eye,
   Sparkles,
   ChevronsRight,
-  PiggyBank,
 } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
@@ -76,7 +75,7 @@ export function BalanceCard() {
         </div>
       </div>
 
-      {/* Cuenta DeVaca · Ahorros */}
+      {/* Cuenta dVaca · Ahorros */}
       <Link
         href="/devaca"
         className="block border-t border-gray-100 px-4 py-3.5 transition-colors active:bg-gray-50"
@@ -87,19 +86,18 @@ export function BalanceCard() {
         {/* Header del módulo */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-2xl"
-              style={{ backgroundColor: VERDE_SOFT }}
-            >
-              <PiggyBank className="h-5 w-5" style={{ color: VERDE }} />
-            </div>
+            <img
+              src="/devaca.png"
+              alt="dVaca"
+              className="h-10 w-10 rounded-xl object-cover"
+            />
             <div>
               <div className="flex items-center gap-1.5">
                 <p
                   className="text-sm font-semibold"
                   style={{ color: MORADO }}
                 >
-                  Mi alcancía DeVaca
+                  Mi alcancía dVaca
                 </p>
                 <span
                   className="rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white"

@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, Headphones, PiggyBank, ChevronRight } from "lucide-react"
+import { Bell, Headphones, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { useDeVaca } from "@/lib/devaca-store"
 
@@ -54,7 +54,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* Chip alcancía DeVaca */}
+      {/* Chip alcancía dVaca */}
       <Link
         href="/devaca"
         className="mt-3 flex items-center justify-between rounded-2xl px-3 py-2 transition-transform active:scale-[0.98]"
@@ -63,15 +63,14 @@ export function Header() {
         }}
       >
         <div className="flex items-center gap-2">
-          <div
-            className="flex h-7 w-7 items-center justify-center rounded-full"
-            style={{ backgroundColor: VERDE }}
-          >
-            <PiggyBank className="h-4 w-4 text-white" />
-          </div>
+          <img
+            src="/devaca.png"
+            alt="dVaca"
+            className="h-7 w-7 rounded-lg object-contain"
+          />
           <div className="leading-tight">
             <p className="text-[10px] uppercase tracking-wide text-gray-500">
-              Tu alcancía DeVaca
+              Tu alcancía dVaca
             </p>
             <p
               className="text-sm font-bold"

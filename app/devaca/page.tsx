@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   ChevronLeft,
-  PiggyBank,
   Sparkles,
   Check,
   ShoppingBag,
@@ -101,14 +100,13 @@ export default function DeVacaPage() {
             <ChevronLeft className="h-6 w-6 text-gray-800" />
           </button>
           <div className="flex items-center gap-2">
-            <div
-              className="flex h-8 w-8 items-center justify-center rounded-full"
-              style={{ backgroundColor: VERDE_SOFT }}
-            >
-              <PiggyBank className="h-5 w-5" style={{ color: VERDE }} />
-            </div>
+            <img
+              src="/devaca.png"
+              alt="dVaca"
+              className="h-8 w-8 rounded-lg object-cover"
+            />
             <span className="text-base font-semibold" style={{ color: MORADO }}>
-              DeVaca
+              dVaca
             </span>
           </div>
           <div className="w-10" />
@@ -397,7 +395,11 @@ function ResumenTab({
       {/* Tarjeta principal */}
       <div className="overflow-hidden rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
         <div className="flex items-center gap-2">
-          <PiggyBank className="h-4 w-4" style={{ color: VERDE }} />
+          <img
+            src="/devaca.png"
+            alt="dVaca"
+            className="h-4 w-4 rounded-sm object-cover"
+          />
           <p className="text-xs text-gray-500">Ahorro acumulado</p>
         </div>
         <p
@@ -773,12 +775,11 @@ function CanjearTab({
       {!habilitado ? (
         <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
           <div className="flex items-start gap-3">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-full"
-              style={{ backgroundColor: VERDE_SOFT }}
-            >
-              <PiggyBank className="h-5 w-5" style={{ color: VERDE }} />
-            </div>
+            <img
+              src="/devaca.png"
+              alt="dVaca"
+              className="h-10 w-10 rounded-lg object-cover"
+            />
             <div className="flex-1">
               <p
                 className="text-sm font-semibold"
@@ -893,7 +894,7 @@ function ConfigurarTab() {
           Configuración de niveles
         </h2>
         <p className="mt-0.5 text-xs text-gray-500">
-          Ajusta las metas y bonuses de DeVaca. Los cambios se reflejan al
+          Ajusta las metas y bonuses de dVaca. Los cambios se reflejan al
           instante en todas las pantallas.
         </p>
       </div>

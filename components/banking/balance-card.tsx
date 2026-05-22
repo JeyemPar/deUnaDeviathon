@@ -36,7 +36,7 @@ export function BalanceCard() {
       <div className="mt-3 flex items-center justify-between border-t border-gray-100 px-4 py-3">
         <div>
           <p className="text-sm text-muted-foreground">Recargar desde</p>
-          <p className="text-sm font-medium text-foreground">Principal ******4059</p>
+          <p className="text-sm font-medium text-foreground">Principal ******4039</p>
         </div>
         <div className="flex items-center gap-2">
           <button className="rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-medium text-foreground shadow-sm">

@@ -9,7 +9,7 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
-import { useDeVaca } from "@/lib/devaca-store"
+import { useDeVaca, getMetaActivaIndex } from "@/lib/devaca-store"
 
 const VERDE = "#00DDA6"
 const VERDE_SOFT = "rgba(0, 221, 166, 0.15)"
@@ -19,10 +19,8 @@ export function BalanceCard() {
   const { state } = useDeVaca()
   const [showBalance, setShowBalance] = useState(true)
 
-  // Próxima meta a alcanzar (la primera que aún no se cumple)
-  const metaActual =
-    state.niveles.find((n) => state.ahorroAcumulado < n.meta) ??
-    state.niveles[state.niveles.length - 1]
+  // Meta efectiva: si el usuario eligió una manualmente, esa; si no, auto.
+  const metaActual = state.niveles[getMetaActivaIndex(state)]
   const progresoDevaca = Math.min(
     100,
     (state.ahorroAcumulado / metaActual.meta) * 100

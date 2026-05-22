@@ -38,6 +38,9 @@ export interface DeVacaState {
   niveles: Nivel[]
   transacciones: Transaccion[]
   mipymes: MiPyme[]
+  // Si null: se elige automáticamente la primera meta no alcanzada.
+  // Si número: el índice de niveles elegido por el usuario.
+  metaSeleccionadaIndex: number | null
 }
 
 const NIVELES_DEFAULT: Nivel[] = [
@@ -70,6 +73,7 @@ const INITIAL_STATE: DeVacaState = {
   niveles: NIVELES_DEFAULT,
   transacciones: TX_DEFAULT,
   mipymes: MIPYMES_DEFAULT,
+  metaSeleccionadaIndex: null,
 }
 
 type Action =
@@ -84,6 +88,7 @@ type Action =
     }
   | { type: "ACTUALIZAR_SALDO_PRINCIPAL"; monto: number }
   | { type: "RESTAURAR_NIVELES" }
+  | { type: "SELECCIONAR_META"; index: number | null }
 
 function reducer(state: DeVacaState, action: Action): DeVacaState {
   switch (action.type) {
@@ -136,7 +141,21 @@ function reducer(state: DeVacaState, action: Action): DeVacaState {
     case "ACTUALIZAR_SALDO_PRINCIPAL":
       return { ...state, saldoPrincipal: Math.max(0, action.monto) }
     case "RESTAURAR_NIVELES":
-      return { ...state, niveles: NIVELES_DEFAULT, metaMes: NIVELES_DEFAULT[0].meta }
+      return {
+        ...state,
+        niveles: NIVELES_DEFAULT,
+        metaMes: NIVELES_DEFAULT[0].meta,
+        metaSeleccionadaIndex: null,
+      }
+    case "SELECCIONAR_META": {
+      if (action.index === null) {
+        return { ...state, metaSeleccionadaIndex: null }
+      }
+      if (action.index < 0 || action.index >= state.niveles.length) {
+        return state
+      }
+      return { ...state, metaSeleccionadaIndex: action.index }
+    }
     default:
       return state
   }
@@ -154,6 +173,7 @@ interface DeVacaContextValue {
   ) => void
   actualizarSaldoPrincipal: (monto: number) => void
   restaurarNiveles: () => void
+  seleccionarMeta: (index: number | null) => void
 }
 
 const DeVacaCtx = createContext<DeVacaContextValue | null>(null)
@@ -188,6 +208,10 @@ export function DeVacaProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "RESTAURAR_NIVELES" })
   }, [])
 
+  const seleccionarMeta = useCallback((index: number | null) => {
+    dispatch({ type: "SELECCIONAR_META", index })
+  }, [])
+
   return (
     <DeVacaCtx.Provider
       value={{
@@ -198,6 +222,7 @@ export function DeVacaProvider({ children }: { children: ReactNode }) {
         actualizarNivel,
         actualizarSaldoPrincipal,
         restaurarNiveles,
+        seleccionarMeta,
       }}
     >
       {children}
@@ -216,4 +241,22 @@ export function useDeVaca() {
 export const DEVACA_DEFAULTS = {
   niveles: NIVELES_DEFAULT,
   mipymes: MIPYMES_DEFAULT,
+}
+
+// Devuelve el índice del nivel que el usuario tiene activo como meta.
+// Si eligió uno manualmente, ese; si no, la primera meta sin alcanzar
+// (o el último nivel si ya superó todas).
+export function getMetaActivaIndex(state: DeVacaState): number {
+  const { metaSeleccionadaIndex, niveles, ahorroAcumulado } = state
+  if (
+    metaSeleccionadaIndex !== null &&
+    metaSeleccionadaIndex >= 0 &&
+    metaSeleccionadaIndex < niveles.length
+  ) {
+    return metaSeleccionadaIndex
+  }
+  for (let i = 0; i < niveles.length; i++) {
+    if (ahorroAcumulado < niveles[i].meta) return i
+  }
+  return Math.max(0, niveles.length - 1)
 }

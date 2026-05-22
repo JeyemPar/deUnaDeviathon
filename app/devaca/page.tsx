@@ -16,7 +16,11 @@ import {
   ChevronRight,
   RotateCcw,
 } from "lucide-react"
-import { useDeVaca, type Transaccion } from "@/lib/devaca-store"
+import {
+  useDeVaca,
+  getMetaActivaIndex,
+  type Transaccion,
+} from "@/lib/devaca-store"
 
 type Tab = "resumen" | "pagar" | "canjear" | "configurar"
 
@@ -24,16 +28,6 @@ const VERDE = "#00DDA6"
 const VERDE_SOFT = "rgba(0, 221, 166, 0.15)"
 const MORADO = "#432959"
 const MORADO_SOFT = "rgba(67, 41, 89, 0.10)"
-
-function getMetaActual(
-  ahorro: number,
-  niveles: { meta: number; bonus: number }[]
-) {
-  for (const n of niveles) {
-    if (ahorro < n.meta) return n
-  }
-  return niveles[niveles.length - 1]
-}
 
 function getBonusGanadoPct(
   ahorro: number,
@@ -52,7 +46,7 @@ function formatMoney(n: number) {
 
 export default function DeVacaPage() {
   const router = useRouter()
-  const { state, canjearAhorro } = useDeVaca()
+  const { state, canjearAhorro, seleccionarMeta } = useDeVaca()
   const [activeTab, setActiveTab] = useState<Tab>("resumen")
 
   const [snackbar, setSnackbar] = useState<{ ahorro: number; total: number } | null>(
@@ -62,7 +56,8 @@ export default function DeVacaPage() {
   const [selectedCanje, setSelectedCanje] = useState<number | null>(null)
   const [canjeSuccess, setCanjeSuccess] = useState(false)
 
-  const meta = getMetaActual(state.ahorroAcumulado, state.niveles)
+  const metaActivaIndex = getMetaActivaIndex(state)
+  const meta = state.niveles[metaActivaIndex]
   const progreso = Math.min(100, (state.ahorroAcumulado / meta.meta) * 100)
   const bonusGanadoPct = getBonusGanadoPct(state.ahorroAcumulado, state.niveles)
   const bonusGanado = state.ahorroAcumulado * (bonusGanadoPct / 100)
@@ -164,6 +159,9 @@ export default function DeVacaPage() {
             meta={meta.meta}
             bonusPct={meta.bonus}
             niveles={state.niveles}
+            metaActivaIndex={metaActivaIndex}
+            metaEsManual={state.metaSeleccionadaIndex !== null}
+            onSeleccionarMeta={seleccionarMeta}
             nombreUsuario={state.nombreUsuario}
             transacciones={state.transacciones}
             onVerTodo={() => setShowHistorial(true)}
@@ -349,6 +347,9 @@ function ResumenTab({
   meta,
   bonusPct,
   niveles,
+  metaActivaIndex,
+  metaEsManual,
+  onSeleccionarMeta,
   nombreUsuario,
   transacciones,
   onVerTodo,
@@ -360,6 +361,9 @@ function ResumenTab({
   meta: number
   bonusPct: number
   niveles: { meta: number; bonus: number }[]
+  metaActivaIndex: number
+  metaEsManual: boolean
+  onSeleccionarMeta: (index: number | null) => void
   nombreUsuario: string
   transacciones: Transaccion[]
   onVerTodo: () => void
@@ -464,29 +468,40 @@ function ResumenTab({
 
       {/* Niveles */}
       <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Niveles de bonus
-        </p>
+        <div className="mb-3 flex items-center justify-between">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Elige tu meta
+          </p>
+          {metaEsManual && (
+            <button
+              onClick={() => onSeleccionarMeta(null)}
+              className="text-[11px] font-semibold transition-opacity active:opacity-60"
+              style={{ color: VERDE }}
+            >
+              Usar automático
+            </button>
+          )}
+        </div>
         <div className="space-y-2">
           {niveles.map((n, i) => {
             const alcanzado = ahorro >= n.meta
-            const enProgreso =
-              !alcanzado &&
-              (i === 0 || ahorro >= (niveles[i - 1]?.meta ?? 0))
+            const esActiva = i === metaActivaIndex
 
             return (
-              <div
+              <button
                 key={`${n.meta}-${i}`}
-                className="flex items-center justify-between rounded-xl px-3 py-2.5 transition-all"
+                onClick={() => onSeleccionarMeta(i)}
+                className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left transition-all active:scale-[0.99]"
                 style={{
-                  backgroundColor: alcanzado ? VERDE_SOFT : "#F9FAFB",
-                  boxShadow: alcanzado
-                    ? `0 0 0 1.5px ${VERDE}`
-                    : enProgreso
-                    ? `0 0 0 1.5px ${VERDE}`
-                    : "none",
-                  animation: enProgreso
-                    ? "devaca-pulse 2s ease-in-out infinite"
+                  backgroundColor: esActiva
+                    ? VERDE_SOFT
+                    : alcanzado
+                    ? "rgba(0, 221, 166, 0.06)"
+                    : "#F9FAFB",
+                  boxShadow: esActiva
+                    ? `0 0 0 2px ${VERDE}`
+                    : alcanzado
+                    ? `0 0 0 1px ${VERDE}`
                     : "none",
                 }}
               >
@@ -511,7 +526,7 @@ function ResumenTab({
                   <div>
                     <p
                       className="text-sm font-medium"
-                      style={{ color: alcanzado ? MORADO : "#6B7280" }}
+                      style={{ color: alcanzado || esActiva ? MORADO : "#6B7280" }}
                     >
                       Meta {formatMoney(n.meta)}
                     </p>
@@ -520,22 +535,22 @@ function ResumenTab({
                     </p>
                   </div>
                 </div>
-                {alcanzado ? (
+                {esActiva ? (
+                  <span
+                    className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white"
+                    style={{ backgroundColor: VERDE }}
+                  >
+                    Tu meta
+                  </span>
+                ) : alcanzado ? (
                   <span
                     className="text-[11px] font-semibold uppercase"
                     style={{ color: VERDE }}
                   >
                     Logrado
                   </span>
-                ) : enProgreso ? (
-                  <span
-                    className="text-[11px] font-semibold uppercase"
-                    style={{ color: VERDE }}
-                  >
-                    En curso
-                  </span>
                 ) : null}
-              </div>
+              </button>
             )
           })}
         </div>

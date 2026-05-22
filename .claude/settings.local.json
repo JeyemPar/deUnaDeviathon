@@ -24,7 +24,8 @@
       "Bash(pnpm dev *)",
       "Bash(tee dev-test.log)",
       "PowerShell($deadline=\\(Get-Date\\).AddSeconds\\(60\\); do { Start-Sleep -Milliseconds 800; $content = if \\(Test-Path dev-test.log\\) { Get-Content dev-test.log -Raw } else { \"\" }; if \\($content -match \"Ready in|Error\"\\) { break } } until \\(\\(Get-Date\\) -gt $deadline\\); Write-Output $content)",
-      "PowerShell(Get-Command *)"
+      "PowerShell(Get-Command *)",
+      "PowerShell(Get-Process *)"
     ]
   }
 }
